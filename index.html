@@ -136,6 +136,7 @@ var assets={
  upload:function(blob,o){var id=uid();return tx('blobs','readwrite',function(s){return s.put({id:id,blob:blob,type:(o&&o.type)||blob.type||''})}).then(function(){return {id:id,url:'local:'+id}})},
  delete:function(id){return tx('blobs','readwrite',function(s){return s.delete(id)})}
 };
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 window.getBlob=function(id){return tx('blobs','readonly',function(s){return s.get(id)}).then(function(r){if(!r)throw new Error('missing');return r.blob})};
 window.hydrateMedia=function(){document.querySelectorAll('video[data-a]').forEach(function(v){if(v.getAttribute('src'))return;window.getBlob(v.getAttribute('data-a')).then(function(b){v.src=URL.createObjectURL(b)}).catch(function(){})})};
 window.claude={use:function(n){return Promise.resolve(n==='user'?{canEdit:function(){return true}}:n==='db'?db:n==='assets'?assets:null)}};
@@ -193,7 +194,7 @@ function render(){
  <label for="z-tt">العنوان (اختياري)</label><input type="text" id="z-tt" placeholder="مثال: الفصل الأول">
  <label for="z-th">المدرس</label><select id="z-th">${tOpts(SUB[0].id)}</select><label for="z-un">الوحدة / الفصل</label><select id="z-un">${uOpts(SUB[0].id)}</select>
  <label><input type="checkbox" id="z-fr"> مجاني للكل</label>
- <label for="z-fl">ارفع ملف PDF (ملزمة أو كتاب) أو فيديو من جوالك</label><input type="file" id="z-fl" accept="application/pdf,video/mp4,video/webm" onchange="quickFile()"><p class="mut" style="margin-top:6px">ينضاف بعد ما تختار الملف (الـPDF الأكبر من 20 ميغا ينضغط تلقائياً). حدد المادة والنوع واسم المدرس قبل.</p>
+ <label for="z-fl">ارفع ملف PDF (ملزمة أو كتاب) أو فيديو من جوالك</label><input type="file" id="z-fl" accept="application/pdf,video/*,image/*" onchange="quickFile()"><p class="mut" style="margin-top:6px">ينضاف بعد ما تختار الملف (PDF أو فيديو أو صورة، بأي حجم يتحمله جوالك). حدد المادة والنوع واسم المدرس قبل.</p>
  <label for="z-lk">أو الصق رابطاً هنا (اختياري)</label><input type="url" id="z-lk" placeholder="https://" onpaste="setTimeout(quickAdd,60)"><button class="btn g" onclick="quickAdd()">إضافة</button><div id="z-ms"></div></div>
  <div class="form"><h3>إضافة ملف أو فيديو</h3>
  <label for="a-ty">النوع</label><select id="a-ty">${Object.keys(TY).map(k=>`<option value="${k}">${TY[k].n}</option>`).join('')}</select>
@@ -201,7 +202,7 @@ function render(){
  <label for="a-tt">العنوان</label><input type="text" id="a-tt" placeholder="مثال: ملزمة الفصل الأول">
  <label for="a-th">المدرس</label><select id="a-th">${tOpts(SUB[0].id)}</select><label for="a-un">الوحدة / الفصل</label><select id="a-un">${uOpts(SUB[0].id)}</select>
  <label for="a-nt">ملاحظة (اختياري)</label><input type="text" id="a-nt" placeholder="مثال: 42 صفحة">
- <label for="a-fl">الملف (فيديو MP4 أو PDF، لحد 20 ميغا)</label><input type="file" id="a-fl" accept="video/mp4,video/webm,application/pdf">
+ <label for="a-fl">الملف (PDF أو فيديو أو صورة، بأي حجم)</label><input type="file" id="a-fl" accept="application/pdf,video/*,image/*">
  <label for="a-lk">أو رابط خارجي (يوتيوب، درايف...)</label><input type="url" id="a-lk" placeholder="https://">
  <label><input type="checkbox" id="a-fr"> مجاني للكل</label>
  <button class="btn g" id="a-go" onclick="addItem()">إضافة</button><div id="a-ms"></div></div>
@@ -283,9 +284,9 @@ function pickAcc(i){S.ob.email=EM()[i];obTry()}
 function typedAcc(){const e=(document.getElementById('ac-in').value||'').trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))return say('ac-ms','اكتب بريد صحيح',1);S.ob.email=e;obTry()}
 function togAdm(){}
 const CODE_DEV='ST8K4P2',CODE_STU='ST7M9Q1';
-function mimeOf(f){const x=(f.name.split('.').pop()||'').toLowerCase();return {pdf:'application/pdf',mp4:'video/mp4',m4v:'video/mp4',webm:'video/webm',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif'}[x]||(f.type&&f.type!=='application/octet-stream'?f.type:'application/pdf')}
+function mimeOf(f){const x=(f.name.split('.').pop()||'').toLowerCase();return {pdf:'application/pdf',mp4:'video/mp4',m4v:'video/mp4',webm:'video/webm',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',svg:'image/svg+xml',mov:'video/mp4',mkv:'video/webm',avi:'video/mp4','3gp':'video/3gpp'}[x]||(f.type&&f.type!=='application/octet-stream'?f.type:'application/pdf')}
 function upErr(e){if(e===0)return 'رفع الملفات غير متاح بحسابك (لازم محرر أو مالك)';const c=e&&e.code;return c==='too_large'?'الملف أكبر من 20 ميغا':c==='unsupported_type'?'نوع الملف غير مدعوم (المسموح PDF وMP4 وصور)':c==='quota_or_state'?'امتلأت مساحة التخزين للتطبيق':c==='not_granted'?'حسابك ما عنده صلاحية رفع (لازم محرر أو مالك)':c==='store_unavailable'?'الخدمة مشغولة، جرب بعد لحظات':'ما انرفع الملف ('+(c||'خطأ')+')'}
-const MAXB=Math.floor(19.5*1024*1024);
+const MAXB=Number.MAX_SAFE_INTEGER;
 async function shrinkPdf(f,mid){if(!window.pdfjsLib||!window.jspdf)throw 0;pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
  const buf=await f.arrayBuffer(),levels=[[1000,.65],[820,.5],[660,.4],[540,.32]];
  for(let L=0;L<levels.length;L++){const W=levels[L][0],Q=levels[L][1],pdf=await pdfjsLib.getDocument({data:buf.slice(0)}).promise;let out=null;
@@ -321,6 +322,7 @@ async function pdfOpen(id,useW){const DATA=new Uint8Array(await (await getBlob(i
  task.promise.then(p=>{clearInterval(wd);res(p)},e=>{clearInterval(wd);rej(e)})})}
 async function openPdf(){const it=ITEMS.find(x=>x.id===S.item),box=document.getElementById('pdfv');if(!it||!it.assetId||!box)return;
  const fail=()=>{const e=document.getElementById('pdfv');if(e)e.innerHTML='<div class="empty">ما قدرت أعرض الملف داخل الصفحة. استخدم زر التنزيل.</div>'};
+ try{const bl=await getBlob(it.assetId),ty=bl.type||'';if(ty.indexOf('image/')===0){const u=URL.createObjectURL(bl);box.innerHTML='<img src="'+u+'" alt="" style="width:100%;border-radius:12px;background:#fff">';return}if(ty.indexOf('video/')===0){const u=URL.createObjectURL(bl);box.innerHTML='<video controls playsinline src="'+u+'" style="width:100%;border-radius:12px"></video>';return}}catch(e){}
  if(!window.pdfjsLib)return fail();const tk=++PT;box.innerHTML='<div class="empty" id="pdf-st">جاري التحميل...</div>';
  try{let pdf=PDFC[it.assetId];if(!pdf){try{pdf=await pdfOpen(it.assetId,true)}catch(e){try{PW&&PW.terminate()}catch(x){}PW=null;pdf=await pdfOpen(it.assetId,false)}PDFC[it.assetId]=pdf}
   const b2=document.getElementById('pdfv');if(tk!==PT||!b2)return;
@@ -332,6 +334,7 @@ async function openPdf(){const it=ITEMS.find(x=>x.id===S.item),box=document.getE
 let PT=0;
 async function openPdfOld(){const it=ITEMS.find(x=>x.id===S.item),el=document.getElementById('pdfv');if(!it||!it.assetId||!el)return;
  const fail=()=>{const e=document.getElementById('pdfv');if(e)e.innerHTML='<div class="empty">ما قدرت أعرض الملف داخل الصفحة. استخدم زر التنزيل.</div>'};
+ try{const bl=await getBlob(it.assetId),ty=bl.type||'';if(ty.indexOf('image/')===0){const u=URL.createObjectURL(bl);box.innerHTML='<img src="'+u+'" alt="" style="width:100%;border-radius:12px;background:#fff">';return}if(ty.indexOf('video/')===0){const u=URL.createObjectURL(bl);box.innerHTML='<video controls playsinline src="'+u+'" style="width:100%;border-radius:12px"></video>';return}}catch(e){}
  if(!window.pdfjsLib)return fail();const tk=++PT;
  try{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   const r=await fetch('/_blob/'+it.assetId);if(!r.ok)throw 0;
