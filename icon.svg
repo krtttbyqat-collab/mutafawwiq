@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16295A"/><stop offset="1" stop-color="#050A1A"/></linearGradient>
+<linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7E3A0"/><stop offset="1" stop-color="#C9A24B"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<circle cx="256" cy="236" r="178" fill="#fff" fill-opacity="0.05"/>
+<path d="M176 214 L256 252 L336 214 V272 C336 306 176 306 176 272 Z" fill="#B8903A"/>
+<path d="M256 118 L424 184 L256 250 L88 184 Z" fill="url(#gd)"/>
+<path d="M256 118 L424 184 L256 250 L88 184 Z" fill="none" stroke="#FFF3C4" stroke-width="3" stroke-linejoin="round"/>
+<path d="M404 192 V268" stroke="#E6C46A" stroke-width="8" stroke-linecap="round"/>
+<circle cx="404" cy="280" r="13" fill="#E6C46A"/>
+<polygon points="256.0,58.0 264.2,80.7 288.3,81.5 269.3,96.3 276.0,119.5 256.0,106.0 236.0,119.5 242.7,96.3 223.7,81.5 247.8,80.7" fill="#FFE9A8"/>
+<path d="M96 328 Q176 306 256 340 V424 Q176 394 96 414 Z" fill="#F4F6FB"/>
+<path d="M416 328 Q336 306 256 340 V424 Q336 394 416 414 Z" fill="#DDE3F2"/>
+<path d="M256 340 V424" stroke="#B8C2DA" stroke-width="3"/>
+<path d="M118 352 Q180 338 240 358" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M272 358 Q332 338 394 352" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M118 368 Q180 354 240 374" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M272 374 Q332 354 394 368" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M118 384 Q180 370 240 390" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M272 390 Q332 370 394 384" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M118 400 Q180 386 240 406" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M272 406 Q332 386 394 400" stroke="#9AA6C2" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>
