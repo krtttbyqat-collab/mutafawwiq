@@ -92,8 +92,13 @@ nav button.on::after{content:"";display:block;width:22px;height:3px;background:v
 .acc-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sheetbg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
 .sheet2{width:100%;max-width:440px;max-height:88vh;overflow:auto;background:var(--bg);border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-x pan-y}
-body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-y;overflow-x:hidden;max-width:100%}
+body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;overflow-x:hidden;max-width:100%;position:relative}
+#app{overflow-x:hidden}
+input,select,textarea,button{max-width:100%}
+input[type=file]{width:100%;min-width:0}
+.row .n,.row h3,.row small,.form h3,.form p{overflow-wrap:anywhere;word-break:break-word}
+.chips{touch-action:pan-x pan-y;overscroll-behavior-x:contain}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
