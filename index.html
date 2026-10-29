@@ -92,9 +92,9 @@ nav button.on::after{content:"";display:block;width:22px;height:3px;background:v
 .acc-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sheetbg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
 .sheet2{width:100%;max-width:440px;max-height:88vh;overflow:auto;background:var(--bg);border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-y;overflow-x:hidden;max-width:100%}
-body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;overflow-x:hidden;max-width:100%;position:relative}
-#app{overflow-x:hidden}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-y;overflow-x:hidden;overflow-x:clip;max-width:100%;overscroll-behavior-x:none}
+body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;overflow-x:hidden;overflow-x:clip;max-width:100%;position:relative;overscroll-behavior-x:none}
+#app{overflow-x:hidden;overflow-x:clip}
 input,select,textarea,button{max-width:100%}
 input[type=file]{width:100%;min-width:0}
 .row .n,.row h3,.row small,.form h3,.form p{overflow-wrap:anywhere;word-break:break-word}
@@ -194,7 +194,7 @@ function render(){
  if(S.v==='res'){const n=QL().length;h=hdr('النتيجة','exam')+`<div class="score">${S.sc}/${n}</div><p class="mut" style="text-align:center">${S.sc===n?'ممتاز! إجابات كلها صح 🏆':'محاولة زينة. راجع الدروس وأعد الاختبار.'}</p><button class="btn g" onclick="go('run',{qi:0,sc:0,pk:null,t:600})">أعد الاختبار</button><button class="btn o" onclick="go('lib',{type:'vid'})">راجع الدروس</button>`}
  if(S.v==='me')h=`<h1 style="margin-bottom:14px">حسابي</h1><div class="hero" style="margin-top:0"><h2>${esc(S.stu.name)}</h2><p>${S.stu.grade==='6'?'السادس الإعدادي'+(S.stu.branch==='sci'?' – العلمي':' – الأدبي'):'الثالث المتوسط'}</p><button class="btn g" style="margin-top:12px" onclick="S.ob={...S.stu};go('onb')">تعديل بياناتي</button></div><button class="row" onclick="go('pay')"><div class="ic" style="margin:0;background:var(--line)">👑</div><div class="n"><h3>الاشتراك</h3><small>${S.paid?'فعّال':'غير مشترك'}</small></div><span>‹</span></button><button class="row"><div class="ic" style="margin:0;background:var(--line)">💬</div><div class="n"><h3>تواصل مع الدعم</h3><small>نرد خلال ساعات</small></div></button>`;
  if(S.v==='pay')h=hdr('الاشتراك',admin?'adm':'me')+`<h1 style="font-size:21px;margin-bottom:12px">افتح كل الدروس والملازم والامتحانات</h1><div class="plan"><p class="mut">شهري</p><b>5,000 د.ع</b></div><div class="plan best"><span class="tag">الأفضل</span><p class="mut">سنوي</p><b>25,000 د.ع</b></div><label for="cd">كود الاشتراك</label><input type="text" id="cd" placeholder="MT-XXXX-XXXX" style="direction:ltr;text-align:center"><button class="btn g" onclick="redeem()">تفعيل الكود</button><div id="cd-ms"></div><p class="mut" style="margin-top:10px">للحصول على كود تواصل مع المدرس.</p>${S.msg?`<div class="toast">${S.msg}</div>`:''}`;
- if(S.v==='adm'){h=`<h1 style="margin-bottom:12px">لوحة الإدارة</h1>${edForm()}
+ if(S.v==='adm'){h=`<h1 style="margin-bottom:4px">لوحة الإدارة</h1><p class="mut" style="margin-bottom:12px">الإصدار 5</p>${edForm()}
  <div class="form" style="border:2px solid var(--gold)"><h3>إضافة سريعة بالرابط</h3><p class="mut">انسخ رابط الفيديو أو الملزمة والصقه بالخانة الأخيرة، وينضاف مباشرة.</p>
  <label for="z-sb">المادة</label><select id="z-sb" onchange="fillT('z')">${SUB.map(x=>`<option value="${x.id}">${x.n}</option>`).join('')}</select>
  <label for="z-ty">النوع</label><select id="z-ty"><option value="auto">تلقائي</option>${Object.keys(TY).map(k=>`<option value="${k}">${TY[k].n}</option>`).join('')}</select>
